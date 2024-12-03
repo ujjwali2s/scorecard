@@ -73,6 +73,9 @@ app.get('/events', async (req, res) => {
   }
 });
 
+app.get('/', (req, res) => {
+  res.status(200).json({ message: 'Backend is running successfully!' });
+});
 
 app.get('/get_odds/:sportRadarId', async (req, res) => {
   const { sportRadarId } = req.params;
