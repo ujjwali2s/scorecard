@@ -1,6 +1,4 @@
-Hosting your MERN stack project on an **AWS VPS (EC2)** involves several steps, from setting up the server to deploying your application. Here's a detailed step-by-step guide:
 
----
 
 ### **1. Set Up Your AWS VPS (EC2 Instance)**
 
