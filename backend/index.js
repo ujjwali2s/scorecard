@@ -4,28 +4,39 @@ const app = express();
 const cors = require('cors');
 app.use(cors());
 
+// Function to fetch the authToken dynamically
+const fetchAuthToken = async () => {
+  try {
+    // Fetch token from the provided URL
+    const response = await axios.get('https://raw.githubusercontent.com/ujjwali2s/crictixx/refs/heads/main/toke.json');
+    return response.data.authToken;
+  } catch (error) {
+    console.error('Error fetching authToken:', error);
+    throw new Error('Error fetching authToken');
+  }
+};
+
 app.get('/get_scorecard/:match_id?', async (req, res) => {
-    // Authentication token
-    const authToken = "exp=1733226610~acl=/*~data=eyJvIjoiaHR0cHM6Ly9zY29yZWNhcmQub2Rkc3RyYWQuY29tIiwiYSI6IjhlZTQ1YjU3NGUyNzgxZDU4MWIwYjBhMTMzODAzOTA2IiwiYWN0Ijoib3JpZ2luY2hlY2siLCJvc3JjIjoib3JpZ2luIn0~hmac=810ade25c03cd7dc7163fecf0e8145f0095237ca50ae708d8c8b15ae0037403d";
-    
-    const matchId = req.params.match_id || 55600973; // Default matchId if not provided
+  // Fetch the authToken dynamically
+  const authToken = await fetchAuthToken();
 
-    const url = `https://lmt.fn.sportradar.com/common/en/Etc:UTC/cricket/get_scorecard/${matchId}?T=${authToken}`;
+  const matchId = req.params.match_id || 55600973; // Default matchId if not provided
 
-    const headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:133.0) Gecko/20100101 Firefox/133.0",
-        "Accept": "*/*",
-        "Accept-Language": "en-US,en;q=0.5",
-        "Origin": "https://scorecard.oddstrad.com"
-    };
+  const url = `https://lmt.fn.sportradar.com/common/en/Etc:UTC/cricket/get_scorecard/${matchId}?T=${authToken}`;
 
-    try {
-        const response = await axios.get(url, { headers });
+  const headers = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:133.0) Gecko/20100101 Firefox/133.0",
+    "Accept": "*/*",
+    "Accept-Language": "en-US,en;q=0.5",
+    "Origin": "https://scorecard.oddstrad.com"
+  };
 
-        res.status(200).json(response.data);
-    } catch (error) {
-        res.status(500).json({ error: "Failed to fetch data" });
-    }
+  try {
+    const response = await axios.get(url, { headers });
+    res.status(200).json(response.data);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch data" });
+  }
 });
 
 const fetchEvents = async () => {
@@ -126,6 +137,7 @@ app.get('/get_odds/:sportRadarId', async (req, res) => {
     res.status(500).json({ message: 'Error fetching odds data' });
   }
 });
+
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
