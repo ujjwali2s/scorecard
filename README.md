@@ -169,4 +169,51 @@ Run the following commands after connecting:
 
 ---
 
-Let me know if you need help with any of these steps!
+### if you using webhooks use same 
+# create a directory on your vps webhooks
+```
+npm init
+```
+```
+nano index.js
+```
+```
+const exec = require('child_process').exec;
+const express = require('express');
+const bodyParser = require('body-parser');
+
+const app = express();
+const port = 3000;
+
+app.use(bodyParser.json());
+
+app.post('/webhook', (req, res) => {
+    const payload = req.body;
+
+    // Only run when there's a push to the main branch
+    if (payload.ref === 'refs/heads/main') {
+        // Define the path to your local repository
+        const repoPath = '/home/your-user/tempbackend';  // Adjust to your local repo path
+
+        // Pull the latest changes from GitHub and install dependencies
+        exec('git pull origin main && npm install', { cwd: repoPath }, (error, stdout, stderr) => {
+            if (error) {
+                console.error(`exec error: ${error}`);
+                console.error(`stderr: ${stderr}`);
+                res.status(500).send('Error pulling the code');
+                return;
+            }
+
+            console.log(stdout);
+            res.status(200).send('Code updated and backend restarted');
+        });
+    } else {
+        res.status(200).send('Not a push to the main branch');
+    }
+});
+
+app.listen(port, () => {
+    console.log(`Listening on port ${port}`);
+});
+
+```
