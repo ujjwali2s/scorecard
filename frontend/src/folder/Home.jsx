@@ -7,7 +7,7 @@ function App() {
 
   // Function to fetch data from the API
   const fetchEvents = () => {
-    fetch("http://localhost:5000/events")  // Fetch from your backend API
+    fetch("http://3.110.166.187:5000/events")  // Fetch from your backend API
       .then((response) => {
         if (!response.ok) {
           throw new Error("Network response was not ok");
