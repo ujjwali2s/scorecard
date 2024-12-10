@@ -26,7 +26,7 @@ export function ScoreCard() {
         "Accept-Language": "en-US,en;q=0.5",
       };
 
-      const response = await axios.get(`http://localhost:5000/get_scorecard/${matchId}`, { headers });
+      const response = await axios.get(`http://3.110.166.187:5000/get_scorecard/${matchId}`, { headers });
       setScore(response.data.doc[0].data.score);
       setLoading(false);
     } catch (err) {
